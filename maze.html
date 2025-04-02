@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабіринт Кохання</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Пройди Лабіринт</h1>
+        <p>Проведи курсор від старту (зелений) до фінішу (червоний), не торкаючись стін!</p>
+
+        <div id="maze-container">
+            <canvas id="maze-canvas" style="display: none;"></canvas>
+            <img id="maze-img" src="maze.jpg" alt="Лабіринт">
+            <div id="message" class="message" style="display: none;"></div>
+            <div id="start-zone">СТАРТ</div>
+             <div id="finish-zone">ФІНІШ</div>
+        </div>
+
+        <a href="letter.html" id="next-button" class="button" style="display: none;">Далі!</a>
+    </div>
+
+    <script src="maze.js"></script>
+</body>
+</html>

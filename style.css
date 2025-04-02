@@ -1,0 +1,134 @@
+body {
+    font-family: sans-serif;
+    background-color: #f8f0f2;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 90%;
+}
+
+h1 {
+    color: #e91e63;
+    margin-bottom: 20px;
+}
+
+.riddle {
+    font-size: 1.2em;
+    font-style: italic;
+    margin: 30px 0;
+    line-height: 1.6;
+}
+
+.answer-hint {
+    color: #777;
+    font-size: 0.9em;
+}
+
+.button {
+    display: inline-block;
+    background-color: #e91e63;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 1.1em;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #c2185b;
+}
+
+/* --- Стилі для лабіринту --- */
+#maze-container {
+    position: relative;
+    margin: 20px auto;
+    display: inline-block; /* Важливо для правильного позиціонування */
+    cursor: pointer;
+    line-height: 0; /* Забирає зайвий відступ під картинкою/канвасом */
+}
+
+#maze-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+#maze-canvas {
+     /* Канвас прихований, але потрібен для логіки */
+     display: none;
+}
+
+
+.message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(233, 30, 99, 0.85);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    pointer-events: none; /* Не заважати подіям миші */
+}
+
+/* --- Візуальні зони старту/фінішу (позиція керується з JS!) --- */
+#start-zone, #finish-zone {
+    position: absolute;
+    padding: 5px 8px; /* Трохи менше */
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em; /* Трохи менше */
+    pointer-events: none;
+    z-index: 5;
+    /* Непрозорість, щоб не заважали бачити лабіринт */
+    opacity: 0.7;
+    /* Стилі нижче будуть перезаписані JS */
+    top: 10px;
+    left: 10px;
+}
+
+#start-zone {
+    background-color: rgba(76, 175, 80, 0.7); /* Зелений */
+    color: white;
+}
+
+#finish-zone {
+    background-color: rgba(244, 67, 54, 0.7); /* Червоний */
+    color: white;
+     /* Розміри будуть встановлені JS, можна прибрати червоний прямокутник */
+     width: auto; /* Скидаємо ширину */
+     height: auto; /* Скидаємо висоту */
+     padding: 5px 8px; /* Повертаємо нормальний паддінг */
+}
+
+/* Стилі для листа */
+.letter-content {
+    text-align: left;
+    line-height: 1.7;
+    margin-top: 30px;
+    font-size: 1.1em;
+    background-color: #fff9fa;
+    padding: 20px;
+    border-left: 5px solid #e91e63;
+    border-radius: 5px;
+}
