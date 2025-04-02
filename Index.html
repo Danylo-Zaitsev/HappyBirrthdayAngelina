@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Для мого сонечка 🌞</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffb6c1;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="step1">
+    <h1>Привіт, моє сонечко 🌞</h1>
+    <p>Я підготував для тебе маленьку пригоду. Готова?</p>
+    <button onclick="goToStep(2)">Так, починаймо!</button>
+  </div>
+
+  <div class="container hidden" id="step2">
+    <h2>Перше випробування 🧠</h2>
+    <p>Я з'являюсь зранку, зникаю ввечері. Без мене темно, а з тобою – світло. Хто я?</p>
+    <button onclick="checkAnswer('sun')">Сонце</button>
+    <button onclick="checkAnswer('moon')">Місяць</button>
+    <button onclick="checkAnswer('flower')">Квіточка</button>
+    <p id="feedback"></p>
+  </div>
+
+  <div class="container hidden" id="step3">
+    <h2>Добре, квіточко 🌸</h2>
+    <p>Останній крок — обери правильні двері 💖</p>
+    <button onclick="goToStep(4)">Ліві двері 🚪</button>
+    <button onclick="goToStep(5)">Праві двері 🚪</button>
+  </div>
+
+  <div class="container hidden" id="step4">
+    <h2>Ти потрапила у тупик 😅</h2>
+    <p>Спробуй інші двері</p>
+    <button onclick="goToStep(3)">Повернутись</button>
+  </div>
+
+  <div class="container hidden" id="step5">
+    <h2>Моя дорога Ангеліна 💌</h2>
+    <p>
+      Ти — моє світло, моя радість і моя найкраща пригода.<br>
+      Я вдячний долі за тебе.<br>
+      З Днем народження, кохана! 💖
+    </p>
+  </div>
+
+  <script>
+    function goToStep(step) {
+      document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+      document.getElementById('step' + step).classList.remove('hidden');
+    }
+
+    function checkAnswer(answer) {
+      const feedback = document.getElementById('feedback');
+      if (answer === 'sun') {
+        feedback.textContent = 'Правильно, сонечко! ☀️';
+        setTimeout(() => goToStep(3), 1000);
+      } else {
+        feedback.textContent = 'Хмм, ні. Спробуй ще 💫';
+      }
+    }
+  </script>
+</body>
+</html>
