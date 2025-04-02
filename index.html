@@ -18,11 +18,14 @@
     canvas {
       border: 4px solid #cc66ff;
       cursor: crosshair;
+      image-rendering: pixelated;
     }
     #message {
       margin-top: 20px;
       font-size: 20px;
       color: #cc3366;
+      text-align: center;
+      max-width: 90%;
     }
     button {
       margin-top: 15px;
@@ -52,29 +55,31 @@
 
     let failed = false;
     let started = false;
+    let finished = false;
 
     img.onload = () => {
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
 
     canvas.addEventListener('mousemove', (e) => {
-      if (failed || !started) return;
+      if (!started || failed || finished) return;
 
       const rect = canvas.getBoundingClientRect();
       const x = Math.floor(e.clientX - rect.left);
       const y = Math.floor(e.clientY - rect.top);
 
       const pixel = ctx.getImageData(x, y, 1, 1).data;
-      const r = pixel[0], g = pixel[1], b = pixel[2];
+      const [r, g, b] = pixel;
 
-      const isWall = (r < 150 && g < 150 && b > 180); // Фіолетові лінії
-      const isFinish = x > 1300 && y < 100;
+      const isWall = r > 120 && g < 100 && b > 180;
+      const isFinish = x > 1300 && y < 80;
 
       if (isWall) {
         failed = true;
-        message.textContent = 'Ой! Ти торкнулась стіни 😢 Почни знову';
+        message.textContent = 'Ой! Ти торкнулась стіни 😢 Почни знову, навівши мишку на старт.';
         nextBtn.style.display = 'none';
       } else if (isFinish) {
+        finished = true;
         message.textContent = 'Ура! Ти дійшла до фінішу! 💖';
         nextBtn.style.display = 'inline-block';
       }
@@ -82,19 +87,23 @@
 
     canvas.addEventListener('mouseenter', (e) => {
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = Math.floor(e.clientX - rect.left);
+      const y = Math.floor(e.clientY - rect.top);
+
       if (x < 100 && y > 900) {
         started = true;
         failed = false;
-        message.textContent = 'Акуратно веди мишку...';
+        finished = false;
+        message.textContent = 'Акуратно веди мишку по доріжці...';
+        nextBtn.style.display = 'none';
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       }
     });
 
     canvas.addEventListener('mouseleave', () => {
-      if (started && !failed) {
+      if (!finished) {
         failed = true;
-        message.textContent = 'Ти вийшла за межі 😢 Почни знову';
+        message.textContent = 'Ти вийшла за межі 😢 Почни спочатку, навівши мишку на старт.';
         nextBtn.style.display = 'none';
       }
     });
