@@ -18,21 +18,19 @@ window.onload = () => {
 
     // Змінні стану гри
     let imgLoaded = false;
-    let isGameOver = false; // Блокування після програшу
-    let isGameWon = false;  // Блокування після виграшу
+    let isGameOver = false;
+    let isGameWon = false;
     let naturalWidth = 0;
     let naturalHeight = 0;
 
     // --- Налаштування ---
     const WALL_COLOR_RGB = [140, 82, 255]; // Колір стін
     const PATH_COLOR_RGB = [255, 255, 255]; // Колір шляху (білий)
-    const COLOR_TOLERANCE = 15; // Допуск для кольорів
+    const COLOR_TOLERANCE = 15;
 
-    // !!! ВАЖЛИВО: ВСТАВ СЮДИ ТОЧНІ КООРДИНАТИ ЗОНИ "КІНЕЦЬ" !!!
-    // Визнач координати (x1, y1, x2, y2) прямокутника навколо виходу "Кінець"
-    // на твоєму зображенні maze.jpg (використовуй редактор або DevTools).
-    const FINISH_AREA = { x1: 500, y1: 20, x2: 590, y2: 80 }; // <-- ЗАМІНИ ЦІ ПРИБЛИЗНІ ЗНАЧЕННЯ!
-    // ---------------------------------------------------------
+    // !!! КООРДИНАТИ ФІНІШНОЇ ЗОНИ (ЗНАЙДЕНІ ТОБОЮ) !!!
+    const FINISH_AREA = { x1: 1674, y1: 373, x2: 1963, y2: 433 };
+    // ----------------------------------------------------
 
     // --- Допоміжні функції ---
     function getMousePos(element, evt) {
@@ -64,25 +62,29 @@ window.onload = () => {
     function isInArea(x, y, area) {
          if (typeof area?.x1 !== 'number' || typeof area?.y1 !== 'number' ||
              typeof area?.x2 !== 'number' || typeof area?.y2 !== 'number') {
-            console.error("Неправильні координати зони:", area); return false;
+             return false; // Просто повертаємо false, якщо координати невалідні
          }
         return x >= area.x1 && x <= area.x2 && y >= area.y1 && y <= area.y2;
     }
 
     // --- Основна логіка ---
     function handleMouseMove(event) {
-        if (!imgLoaded || isGameOver || isGameWon) return; // Не обробляти, якщо гра закінчена
+        if (!imgLoaded || isGameOver || isGameWon) return;
 
         const pos = getMousePos(mazeImg, event);
         const pixelColor = getPixelColor(pos.x, pos.y);
 
-        if (!pixelColor) return; // За межами
+        if (!pixelColor) return;
 
         // 1. Перевірка стіни
         if (colorsMatch(pixelColor, WALL_COLOR_RGB)) {
-            console.log("Зіткнення!");
-            triggerGameOver("Обережно! Спробуй ще раз, кохання!");
-            return;
+            // Важливо: Додаткова перевірка, чи не знаходимось ми ВЖЕ у фінішній зоні
+            // (щоб не програти одразу при вході в неї, якщо стіна близько)
+            if (!isInArea(pos.x, pos.y, FINISH_AREA)) {
+                console.log("Зіткнення!");
+                triggerGameOver("Обережно! Спробуй ще раз, кохання!");
+                return;
+            }
         }
         // 2. Перевірка фінішу
         else if (isInArea(pos.x, pos.y, FINISH_AREA) && colorsMatch(pixelColor, PATH_COLOR_RGB)) {
@@ -107,7 +109,7 @@ window.onload = () => {
         console.log("Гра виграна!");
         if (successMessage) successMessage.style.display = 'block';
         if (nextMazeButton) nextMazeButton.style.display = 'inline-block';
-        if (collisionModal) collisionModal.style.display = 'none'; // Ховаємо вікно програшу, якщо воно було
+        if (collisionModal) collisionModal.style.display = 'none';
     }
 
     function retryGame() {
@@ -117,33 +119,46 @@ window.onload = () => {
         if (nextMazeButton) nextMazeButton.style.display = 'none';
         isGameWon = false;
 
-        // Затримка перед розблокуванням isGameOver
         setTimeout(() => {
             isGameOver = false;
             console.log("Гра розблокована.");
-        }, 200); // 0.2 секунди
+        }, 200);
     }
 
-    function handleMouseLeave() {
-        // Можна додати логіку програшу при виході
-    }
+    function handleMouseLeave() { /* Можна залишити порожнім */ }
 
     // --- Ініціалізація ---
     mazeImg.onload = () => {
         console.log("Зображення лабіринту завантажено.");
         naturalWidth = mazeImg.naturalWidth;
         naturalHeight = mazeImg.naturalHeight;
-        if (naturalWidth === 0 || naturalHeight === 0) { /* ... обробка помилки ... */ return; }
+        if (naturalWidth === 0 || naturalHeight === 0) {
+            console.error("Помилка: Розміри зображення 0x0.");
+            triggerGameOver("Помилка завантаження розмірів лабіринту.");
+            if(retryButton) retryButton.style.display = 'none';
+            if(nextMazeButton) nextMazeButton.style.display = 'none';
+            return;
+        }
         canvas.width = naturalWidth;
         canvas.height = naturalHeight;
         try {
             ctx.drawImage(mazeImg, 0, 0, canvas.width, canvas.height);
             imgLoaded = true;
             console.log(`Канвас готовий. Розмір: ${naturalWidth}x${naturalHeight}`);
-        } catch (e) { /* ... обробка помилки ... */ }
+        } catch (e) {
+            console.error("Помилка малювання зображення на канвас:", e);
+            triggerGameOver("Сталася помилка при обробці лабіринту.");
+            if(retryButton) retryButton.style.display = 'none';
+            if(nextMazeButton) nextMazeButton.style.display = 'none';
+        }
     };
 
-     mazeImg.onerror = () => { /* ... обробка помилки ... */ };
+     mazeImg.onerror = () => {
+         console.error("Помилка завантаження файлу зображення лабіринту!");
+         triggerGameOver("Не вдалося завантажити файл лабіринту :(");
+         if(retryButton) retryButton.style.display = 'none';
+         if(nextMazeButton) nextMazeButton.style.display = 'none';
+     };
 
      mazeImg.src = "maze.jpg"; // Завантаження
 
@@ -151,7 +166,7 @@ window.onload = () => {
     if(mazeContainer) {
         mazeContainer.addEventListener('mousemove', handleMouseMove);
         mazeContainer.addEventListener('mouseleave', handleMouseLeave);
-    } else { console.error("Контейнер 'maze-container' не знайдено!"); }
+    } else { console.error("Контейнер лабіринту 'maze-container' не знайдено!"); }
 
     if (retryButton) {
         retryButton.addEventListener('click', retryGame);
