@@ -48,6 +48,7 @@ h1 {
     margin-top: 20px;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    border: none;
 }
 
 .button:hover {
@@ -58,9 +59,9 @@ h1 {
 #maze-container {
     position: relative;
     margin: 20px auto;
-    display: inline-block; /* Важливо для правильного позиціонування */
+    display: inline-block;
     cursor: pointer;
-    line-height: 0; /* Забирає зайвий відступ під картинкою/канвасом */
+    line-height: 0;
 }
 
 #maze-img {
@@ -71,57 +72,53 @@ h1 {
 }
 
 #maze-canvas {
-     /* Канвас прихований, але потрібен для логіки */
      display: none;
 }
 
+/* --- Стилі для модального вікна --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; /* Початково ховаємо */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-.message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(233, 30, 99, 0.85);
-    color: white;
-    padding: 15px 25px;
+.modal-content {
+    background-color: #fff;
+    padding: 30px 40px;
     border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+}
+
+.modal-content p {
     font-size: 1.2em;
-    z-index: 10;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    pointer-events: none; /* Не заважати подіям миші */
+    color: #333;
+    margin-bottom: 25px;
 }
 
-/* --- Візуальні зони старту/фінішу (позиція керується з JS!) --- */
-#start-zone, #finish-zone {
-    position: absolute;
-    padding: 5px 8px; /* Трохи менше */
-    border-radius: 5px;
+.modal-content .button {
+    margin-top: 0;
+}
+
+/* Стилі для повідомлення про успіх */
+#success-message {
+    color: #4CAF50; /* Зелений колір */
+    margin-top: 15px;
     font-weight: bold;
-    font-size: 0.7em; /* Трохи менше */
-    pointer-events: none;
-    z-index: 5;
-    /* Непрозорість, щоб не заважали бачити лабіринт */
-    opacity: 0.7;
-    /* Стилі нижче будуть перезаписані JS */
-    top: 10px;
-    left: 10px;
+    font-size: 1.1em;
+    /* display: none; керується JS */
 }
 
-#start-zone {
-    background-color: rgba(76, 175, 80, 0.7); /* Зелений */
-    color: white;
-}
 
-#finish-zone {
-    background-color: rgba(244, 67, 54, 0.7); /* Червоний */
-    color: white;
-     /* Розміри будуть встановлені JS, можна прибрати червоний прямокутник */
-     width: auto; /* Скидаємо ширину */
-     height: auto; /* Скидаємо висоту */
-     padding: 5px 8px; /* Повертаємо нормальний паддінг */
-}
-
-/* Стилі для листа */
+/* --- Стилі для листа --- */
 .letter-content {
     text-align: left;
     line-height: 1.7;
@@ -131,4 +128,10 @@ h1 {
     padding: 20px;
     border-left: 5px solid #e91e63;
     border-radius: 5px;
+}
+
+.letter-content + img {
+     max-width: 80%;
+     border-radius: 10px;
+     margin-top: 20px;
 }

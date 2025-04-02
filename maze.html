@@ -9,17 +9,26 @@
 <body>
     <div class="container">
         <h1>Пройди Лабіринт</h1>
-        <p>Проведи курсор від старту (зелений) до фінішу (червоний), не торкаючись стін!</p>
+        <p>Проведи курсор від "Початок" до "Кінець", не торкаючись стін!</p>
 
         <div id="maze-container">
             <canvas id="maze-canvas" style="display: none;"></canvas>
             <img id="maze-img" src="maze.jpg" alt="Лабіринт">
-            <div id="message" class="message" style="display: none;"></div>
-            <div id="start-zone">СТАРТ</div>
-             <div id="finish-zone">ФІНІШ</div>
         </div>
 
-        <a href="letter.html" id="next-button" class="button" style="display: none;">Далі!</a>
+        <div id="success-message" style="display: none;">
+           Лабіринт пройдено!
+        </div>
+
+        <a href="letter.html" id="next-maze-button" class="button" style="display: none;">Далі</a>
+
+         <div id="collision-modal" class="modal-overlay">
+            <div class="modal-content">
+                <p id="collision-message">Обережно! Спробуй ще раз, кохання!</p>
+                <button id="retry-button" class="button">Спробувати ще раз</button>
+            </div>
+        </div>
+
     </div>
 
     <script src="maze.js"></script>
