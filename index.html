@@ -14,12 +14,14 @@
       height: 100vh;
       margin: 0;
       text-align: center;
+      flex-direction: column;
     }
     .container {
       background: white;
       padding: 30px;
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 90%;
     }
     button {
       padding: 10px 20px;
@@ -34,92 +36,36 @@
       display: none;
     }
     #maze {
-      width: 300px;
-      height: auto;
-      border: 2px solid #ccc;
+      width: 1000px;
+      max-width: 100%;
+      border: 3px solid #cc66ff;
       cursor: crosshair;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="step1">
-    <h1>Привіт, моє сонечко 🌞</h1>
-    <p>Я підготував для тебе маленьку пригоду. Готова?</p>
-    <button onclick="goToStep(2)">Так, починаймо!</button>
-  </div>
-
-  <div class="container hidden" id="step2">
-    <h2>Перше випробування 💘</h2>
-    <p>
-      Я буваю першим, останнім, справжнім, таємним.<br>
-      Я надихаю поетів, митців і... мене, коли я думаю про тебе.<br>
-      Хто я?
-    </p>
-    <button onclick="checkAnswer('love')">Кохання</button>
-    <button onclick="checkAnswer('музика')">Музика</button>
-    <button onclick="checkAnswer('натхнення')">Натхнення</button>
-    <p id="feedback"></p>
-    <button id="nextButton" class="hidden" onclick="goToStep(3)">Йдемо далі 🌟</button>
-  </div>
-
-  <div class="container hidden" id="step3">
-    <h2>Міні-гра 💘</h2>
-    <p>Проведи курсором від <strong>Початку</strong> до <strong>Фінішу</strong>, не виходячи за межі ❤️</p>
-    <img src="A_2D_digital_maze_puzzle_image_features_a_lavender.png" id="maze" onmouseleave="resetMaze()">
+  <div class="container" id="step3">
+    <h2>Проведи мишкою ❤️</h2>
+    <p>Спробуй пройти шлях від <strong>Початку</strong> до <strong>Кінця</strong>, не торкаючись стін!</p>
+    <img src="maze-final.png" id="maze" onmouseleave="resetMaze()">
     <p id="mazeMsg"></p>
-    <button id="toFinal" class="hidden" onclick="goToStep(5)">Продовжити 💖</button>
-  </div>
-
-  <div class="container hidden" id="step4">
-    <h2>Ти потрапила у тупик 😅</h2>
-    <p>Спробуй інші двері</p>
-    <button onclick="goToStep(3)">Повернутись</button>
-  </div>
-
-  <div class="container hidden" id="step5">
-    <h2>Моя дорога Ангеліна 💌</h2>
-    <p>
-      Ти — моє світло, моя радість і моя найкраща пригода.<br>
-      Я вдячний долі за тебе.<br>
-      З Днем народження, кохана! 💖
-    </p>
+    <button id="toFinal" class="hidden" onclick="alert('Ти пройшла лабіринт! 💖')">Продовжити 💖</button>
   </div>
 
   <script>
-    function goToStep(step) {
-      document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
-      document.getElementById('step' + step).classList.remove('hidden');
-    }
-
-    function checkAnswer(answer) {
-      const feedback = document.getElementById('feedback');
-      const nextButton = document.getElementById('nextButton');
-
-      if (answer === 'love') {
-        feedback.textContent = 'Так, це воно... Моє кохання до тебе — моя найбільша муза 💘';
-        nextButton.classList.remove('hidden');
-      } else {
-        feedback.textContent = 'Не зовсім. Подумай ще трішки 😘';
-        nextButton.classList.add('hidden');
-      }
-    }
-
-    function resetMaze() {
-      const msg = document.getElementById('mazeMsg');
-      msg.textContent = 'Ой! Ти вийшла за межі лабіринту 😢 Спробуй ще раз.';
-      document.getElementById('toFinal').classList.add('hidden');
-    }
-
     document.getElementById('maze').addEventListener('mouseenter', () => {
-      document.getElementById('mazeMsg').textContent = '';
+      document.getElementById('mazeMsg').textContent = 'Акуратно... Ти в лабіринті 🌸';
     });
 
     document.getElementById('maze').addEventListener('click', () => {
-      document.getElementById('mazeMsg').textContent = 'Ура! Ти пройшла лабіринт ❤️';
+      document.getElementById('mazeMsg').textContent = 'Ура! Ти пройшла лабіринт 😍';
       document.getElementById('toFinal').classList.remove('hidden');
     });
+
+    function resetMaze() {
+      document.getElementById('mazeMsg').textContent = 'Ой! Ти вийшла за межі 😢 Спробуй ще раз.';
+      document.getElementById('toFinal').classList.add('hidden');
+    }
   </script>
 </body>
 </html>
-
-
