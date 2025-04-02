@@ -14,8 +14,22 @@
             Я надихаю поетів, митців і навіть мене...<br>
             Хто я?
         </p>
-        <p class="answer-hint">(Відповідь чекає на тебе попереду...)</p>
-        <a href="maze.html" class="button">Спробувати знайти відповідь</a>
+
+        <div id="answer-options">
+            <button class="button answer-button" data-correct="false">Дружба</button>
+            <button class="button answer-button" data-correct="true">Кохання</button> <button class="button answer-button" data-correct="false">Пристрасть</button>
+        </div>
+
+        <p id="riddle-feedback" style="display: none; color: #e91e63; margin-top: 15px; font-weight: bold;">
+            Подумай краще, сонечко!
+        </p>
+
+        <div id="riddle-success-modal" class="modal-overlay"> <div class="modal-content">
+                <p>Вумничка моя, йдемо далі!</p>
+                <a href="maze.html" class="button">Далі</a> </div>
+        </div>
+
     </div>
-</body>
+
+    <script src="riddle.js"></script> </body>
 </html>

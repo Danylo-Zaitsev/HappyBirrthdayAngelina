@@ -135,3 +135,31 @@ h1 {
      border-radius: 10px;
      margin-top: 20px;
 }
+
+/* --- Стилі для сторінки загадки --- */
+
+#answer-options {
+    margin-top: 30px; /* Відступ від загадки */
+    display: flex;
+    justify-content: center; /* Кнопки по центру */
+    gap: 15px; /* Відстань між кнопками */
+    flex-wrap: wrap; /* Перенос кнопок, якщо не вміщаються */
+}
+
+/* Стилі для кнопок відповіді (додатково до .button) */
+.answer-button {
+    min-width: 120px; /* Мінімальна ширина кнопки */
+}
+
+#riddle-feedback {
+    color: #e91e63; /* Колір повідомлення про помилку */
+    margin-top: 20px;
+    font-weight: bold;
+    /* display: none; керується JS */
+}
+
+/* ID для модального вікна загадки (використовує стилі .modal-overlay та .modal-content) */
+#riddle-success-modal .modal-content p {
+    color: #4CAF50; /* Зелений текст успіху */
+    font-size: 1.3em; /* Трохи більший текст */
+}
