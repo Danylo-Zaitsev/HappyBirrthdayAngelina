@@ -12,23 +12,23 @@ window.onload = () => {
     let naturalWidth = 0;
     let naturalHeight = 0;
 
-    // --- !!! ВАЖЛИВО: Налаштування (ЙМОВІРНО, ПОТРЕБУЮТЬ КОРЕКЦІЇ) !!! ---
+    // --- !!! УВАГА: ЦЕ ПРИБЛИЗНІ НАЛАШТУВАННЯ - ЇХ ТРЕБА ПЕРЕВІРИТИ І ЗМІНИТИ !!! ---
 
-    // !!! СПРОБУЙ ВИЗНАЧИТИ ТОЧНИЙ КОЛІР СТІН ПІПЕТКОЮ !!!
-    const WALL_COLOR_RGB = [102, 0, 204]; // ПРИБЛИЗНИЙ фіолетовий - ПЕРЕВІР ЦЕ!
+    // !!! ВСТАВ СЮДИ ТОЧНИЙ RGB КОЛІР СТІН ТВОГО ЛАБІРИНТУ (визнач піпеткою!) !!!
+    const WALL_COLOR_RGB = [102, 0, 204]; // ПРИКЛАД ФІОЛЕТОВОГО - ЗАМІНИ НА СВІЙ!
 
-    // Колір шляху (ймовірно, білий)
+    // Колір шляху (ймовірно, білий, але перевір!)
     const PATH_COLOR_RGB = [255, 255, 255];
 
-    // !!! ВИЗНАЧ ТОЧНІ КООРДИНАТИ В РЕДАКТОРІ АБО ОЦІНИ РЕТЕЛЬНІШЕ !!!
+    // !!! ВСТАВ СЮДИ ТОЧНІ КООРДИНАТИ СТАРТОВОЇ ЗОНИ (x1, y1, x2, y2) !!!
     // Координати зони СТАРТУ ("Початок" внизу зліва) - ПРИБЛИЗНІ!
-    const START_AREA = { x1: 10, y1: 280, x2: 50, y2: 380 };
+    const START_AREA = { x1: 10, y1: 280, x2: 50, y2: 380 }; // ЗАМІНИ НА СВОЇ!
 
+    // !!! ВСТАВ СЮДИ ТОЧНІ КООРДИНАТИ ФІНІШНОЇ ЗОНИ (x1, y1, x2, y2) !!!
     // Координати зони ФІНІШУ ("Кінець" вгорі справа) - ПРИБЛИЗНІ!
-    // Припускаємо ширину близько 600px. Якщо ширина інша - ці X не підійдуть!
-    const FINISH_AREA = { x1: 500, y1: 20, x2: 590, y2: 80 };
+    const FINISH_AREA = { x1: 500, y1: 20, x2: 590, y2: 80 }; // ЗАМІНИ НА СВОЇ!
 
-    // Допуск для порівняння кольорів (для згладжування) - можеш погратися цим значенням (5-25)
+    // Допуск для порівняння кольорів (можна змінити: 5, 10, 15, 20...)
     const COLOR_TOLERANCE = 15;
 
     // --- Кінець налаштувань ---
@@ -36,7 +36,7 @@ window.onload = () => {
 
     // Функція для отримання позиції миші відносно елемента (враховує масштабування)
     function getMousePos(element, evt) {
-        if (!naturalWidth || !naturalHeight) return { x: 0, y: 0 }; // Запобіжник
+        if (!naturalWidth || !naturalHeight) return { x: 0, y: 0 };
         const rect = element.getBoundingClientRect();
         const scaleX = naturalWidth / element.width;
         const scaleY = naturalHeight / element.height;
@@ -54,7 +54,7 @@ window.onload = () => {
     // Функція для отримання кольору пікселя
     function getPixelColor(x, y) {
         if (!imgLoaded || !ctx || x < 0 || x >= naturalWidth || y < 0 || y >= naturalHeight) {
-            return null; // Повертаємо null, якщо за межами або не готово
+            return null;
         }
         try {
             const pixelData = ctx.getImageData(x, y, 1, 1).data;
@@ -80,20 +80,18 @@ window.onload = () => {
         const pos = getMousePos(mazeImg, event);
         const pixelColor = getPixelColor(pos.x, pos.y);
 
-        // --- Додано логування для діагностики (відкрий консоль F12) ---
-         console.log(`Pos: (${pos.x}, ${pos.y}), Color: ${JSON.stringify(pixelColor)}, Active: ${gameActive}, InStart: ${isInArea(pos.x, pos.y, START_AREA)}, InFinish: ${isInArea(pos.x, pos.y, FINISH_AREA)}, IsWall: ${colorsMatch(pixelColor, WALL_COLOR_RGB)}, IsPath: ${colorsMatch(pixelColor, PATH_COLOR_RGB)}`);
-        // ---
+        // Логування для діагностики (відкрий консоль F12)
+         console.log(`Pos: (${pos.x}, ${pos.y}), Color: ${JSON.stringify(pixelColor)}, Active: ${gameActive}, IsWall: ${colorsMatch(pixelColor, WALL_COLOR_RGB)}, IsPath: ${colorsMatch(pixelColor, PATH_COLOR_RGB)}`);
 
-        if (!pixelColor) { // Якщо курсор за межами картинки
-            if (gameActive) { // Якщо гра була активна - це помилка
+        if (!pixelColor) {
+            if (gameActive) {
                 console.log("Вийшли за межі!");
-                 triggerCollision("Ой, ти вийшла за межі! Повертайся на старт.", 'rgba(255, 152, 0, 0.85)'); // Помаранчевий
+                 triggerCollision("Ой, ти вийшла за межі! Повертайся на старт.", 'rgba(255, 152, 0, 0.85)');
             }
              return;
          }
 
-
-        // Перевірка старту (тільки якщо гра не активна)
+        // Перевірка старту
         if (!gameActive && isInArea(pos.x, pos.y, START_AREA) && colorsMatch(pixelColor, PATH_COLOR_RGB)) {
             console.log("Гра почалась!");
             gameActive = true;
@@ -102,7 +100,6 @@ window.onload = () => {
             return;
         }
 
-        // Подальші перевірки тільки якщо гра активна
         if (!gameActive) return;
 
         // Перевірка фінішу
@@ -110,7 +107,7 @@ window.onload = () => {
             console.log("Фініш!");
             gameActive = false;
             messageDiv.textContent = "Вітаю! Ти пройшла лабіринт кохання!";
-            messageDiv.style.backgroundColor = 'rgba(76, 175, 80, 0.85)'; // Зелений
+            messageDiv.style.backgroundColor = 'rgba(76, 175, 80, 0.85)';
             messageDiv.style.display = 'block';
             nextButton.style.display = 'inline-block';
             return;
@@ -119,14 +116,14 @@ window.onload = () => {
         // Перевірка зіткнення зі стіною
         if (colorsMatch(pixelColor, WALL_COLOR_RGB)) {
             console.log("Зіткнення!");
-             triggerCollision("Будь обережніша, спробуй ще, кохання!", 'rgba(233, 30, 99, 0.85)'); // Рожевий
+             triggerCollision("Будь обережніша, спробуй ще, кохання!", 'rgba(233, 30, 99, 0.85)');
             return;
         }
     }
 
     // Функція для обробки зіткнення або виходу за межі
     function triggerCollision(msgText, bgColor) {
-         if (collisionTimeout) return; // Не спрацьовувати, якщо вже є активний таймаут
+         if (collisionTimeout) return;
          gameActive = false;
          messageDiv.textContent = msgText;
          messageDiv.style.backgroundColor = bgColor;
@@ -135,18 +132,16 @@ window.onload = () => {
 
          collisionTimeout = setTimeout(() => {
              collisionTimeout = null;
-         }, 500); // Трохи довший таймаут
+         }, 500);
     }
-
 
      // Обробник виходу миші за межі контейнера лабіринту
      function handleMouseLeave() {
          if (gameActive) {
              console.log("Миша покинула лабіринт під час гри.");
-              triggerCollision("Треба починати знову зі старту!", 'rgba(255, 152, 0, 0.85)'); // Помаранчевий
+              triggerCollision("Треба починати знову зі старту!", 'rgba(255, 152, 0, 0.85)');
          }
      }
-
 
     // --- Ініціалізація ---
     mazeImg.onload = () => {
@@ -159,7 +154,6 @@ window.onload = () => {
         imgLoaded = true;
         console.log(`Канвас готовий. Розмір: ${naturalWidth}x${naturalHeight}`);
 
-        // Налаштовуємо CSS позиції візуальних зон (можна потім точніше підігнати в style.css)
         const startZoneDiv = document.getElementById('start-zone');
         const finishZoneDiv = document.getElementById('finish-zone');
         if (startZoneDiv) {
@@ -167,22 +161,22 @@ window.onload = () => {
              startZoneDiv.style.top = `${START_AREA.y1}px`;
          }
          if (finishZoneDiv) {
-             finishZoneDiv.style.left = `${FINISH_AREA.x1}px`; // Використовуємо left
-             finishZoneDiv.style.top = `${FINISH_AREA.y1}px`;  // Використовуємо top
-              // Можна додати розміри, щоб було видно приблизну зону
+             finishZoneDiv.style.left = `${FINISH_AREA.x1}px`;
+             finishZoneDiv.style.top = `${FINISH_AREA.y1}px`;
              finishZoneDiv.style.width = `${FINISH_AREA.x2 - FINISH_AREA.x1}px`;
              finishZoneDiv.style.height = `${FINISH_AREA.y2 - FINISH_AREA.y1}px`;
          }
         console.log("Візуальні зони позиціоновані (приблизно).");
-
     };
+
      mazeImg.onerror = () => {
          console.error("Помилка завантаження зображення лабіринту!");
          messageDiv.textContent = "Не вдалося завантажити лабіринт :(";
          messageDiv.style.display = 'block';
      };
-     // Встановлюємо src ПІСЛЯ призначення обробників
-     mazeImg.src = "maze.png";
+
+     // !!! ОСЬ ТУТ ВИПРАВЛЕНО НА .jpg !!!
+     mazeImg.src = "maze.jpg"; // Встановлюємо правильний src
 
 
     // Додаємо слухачів подій
