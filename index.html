@@ -3,69 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Для мого сонечка 🌞</title>
+  <title>Пройди лабіринт 💖</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
       display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
     }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      max-width: 90%;
+    canvas {
+      border: 4px solid #cc66ff;
+      cursor: crosshair;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #cc3366;
     }
     button {
+      margin-top: 15px;
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #ffb6c1;
       border: none;
+      background-color: #ffb6c1;
       border-radius: 10px;
       cursor: pointer;
-      margin: 10px;
-    }
-    .hidden {
       display: none;
-    }
-    #maze {
-      width: 1000px;
-      max-width: 100%;
-      border: 3px solid #cc66ff;
-      cursor: crosshair;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="step3">
-    <h2>Проведи мишкою ❤️</h2>
-    <p>Спробуй пройти шлях від <strong>Початку</strong> до <strong>Кінця</strong>, не торкаючись стін!</p>
-    <img src="maze-final.png" id="maze" onmouseleave="resetMaze()">
-    <p id="mazeMsg"></p>
-    <button id="toFinal" class="hidden" onclick="alert('Ти пройшла лабіринт! 💖')">Продовжити 💖</button>
-  </div>
+  <canvas id="maze" width="1400" height="1000"></canvas>
+  <div id="message">Почни з нижнього лівого кута і веди мишку до верхнього правого! 🧠</div>
+  <button id="nextBtn" onclick="alert('Ти пройшла лабіринт! 💖')">Продовжити</button>
 
   <script>
-    document.getElementById('maze').addEventListener('mouseenter', () => {
-      document.getElementById('mazeMsg').textContent = 'Акуратно... Ти в лабіринті 🌸';
+    const canvas = document.getElementById('maze');
+    const ctx = canvas.getContext('2d');
+    const message = document.getElementById('message');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const img = new Image();
+    img.src = 'maze-cropped.png';
+
+    let failed = false;
+    let started = false;
+
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (failed || !started) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor(e.clientX - rect.left);
+      const y = Math.floor(e.clientY - rect.top);
+
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const r = pixel[0], g = pixel[1], b = pixel[2];
+
+      const isWall = (r < 150 && g < 150 && b > 180); // Фіолетові лінії
+      const isFinish = x > 1300 && y < 100;
+
+      if (isWall) {
+        failed = true;
+        message.textContent = 'Ой! Ти торкнулась стіни 😢 Почни знову';
+        nextBtn.style.display = 'none';
+      } else if (isFinish) {
+        message.textContent = 'Ура! Ти дійшла до фінішу! 💖';
+        nextBtn.style.display = 'inline-block';
+      }
     });
 
-    document.getElementById('maze').addEventListener('click', () => {
-      document.getElementById('mazeMsg').textContent = 'Ура! Ти пройшла лабіринт 😍';
-      document.getElementById('toFinal').classList.remove('hidden');
+    canvas.addEventListener('mouseenter', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x < 100 && y > 900) {
+        started = true;
+        failed = false;
+        message.textContent = 'Акуратно веди мишку...';
+      }
     });
 
-    function resetMaze() {
-      document.getElementById('mazeMsg').textContent = 'Ой! Ти вийшла за межі 😢 Спробуй ще раз.';
-      document.getElementById('toFinal').classList.add('hidden');
-    }
+    canvas.addEventListener('mouseleave', () => {
+      if (started && !failed) {
+        failed = true;
+        message.textContent = 'Ти вийшла за межі 😢 Почни знову';
+        nextBtn.style.display = 'none';
+      }
+    });
   </script>
 </body>
 </html>
